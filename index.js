@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = 3000;
-var session = require('express-session')
+var session = require('express-session');
+const multer=require('multer');
+var fileExtension=require('file-extension');
 // var MongoStore = require('connect-mongo')(session);
 
 const mongoose= require('./db');
@@ -17,8 +19,8 @@ app.use(express.json());
 app.use(cors({orgin:'http://localhost:4200/'}))
 
 
-app.use('/recipees',userroutes);
-// app.use('/admin', adminroutes);
+app.use('/userside',userroutes);
+app.use('/adminside', adminroutes);
 
 
 
