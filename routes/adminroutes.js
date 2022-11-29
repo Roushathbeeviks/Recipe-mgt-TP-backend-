@@ -1,50 +1,4 @@
 
-// const express=require('express');
-// const { isValidObjectId, model } = require('mongoose');
-// const router=express.Router(); 
-// const Register=require('../models/register')
-// const ObjectId = require('mongoose').Types.ObjectId;
-// const multer  = require('multer');
-// const { route } = require('./userroutes');
-
-
-// const PATH = './uploads';
-// let storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, PATH);
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.fieldname + '-' + Date.now())
-//   }
-// });
-// let upload = multer({
-//   storage: storage
-// });
-
-
-// //get api
-// router.get('/images', function (req, res) {
-//     res.send('File catcher');
-//   });
-
-
-//   // POST File
-//   router.post('/images/upload', upload.single('image'), function (req, res) {
-//     if (!req.file) {
-//       console.log("No file is available!");
-//       return res.send({
-//         success: false
-//       });
-//     } else {
-//       console.log('File is available!');
-//       return res.send({
-//         success: true
-//       })
-//     }
-//   });
-
-// IMAGE UPLOADING
-
 
 const express=require('express');
 const { isValidObjectId, model } = require('mongoose');
@@ -58,10 +12,12 @@ var fileExtension = require('file-extension')
 
 var storage = multer.diskStorage({
     destination: (req, file, callBack) => {
-        callBack(null, "C:\Users\roushath.k\Desktop\RECIPE_MGT\website\src\assets\images")
+        console.log(file)
+        callBack(null, "../website/src/assets/adminimages/")
     },
     filename: (req, file, callBack) => {
-        callBack(null, `${getTime()}-${file.originalname}`)
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        callBack(null, file.originalname.split('.')[0] + '-' + uniqueSuffix + `.${file.originalname.split('.')[1]}`)
     }
 })
 
@@ -80,6 +36,7 @@ router.get('/addrecipe',(req,res)=>
         else
         {
             res.send(doc)
+            // console.log(doc)
         }
     })
 })
@@ -100,41 +57,33 @@ router.delete('/addrecipe/:id',(req,res)=>
     })
  })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var upload = multer({ storage: storage})
-router.post('/addrecipe',upload.single('file'),(req,res)=>
+router.post('/upload', upload.single('pic'), function (req, res, next) {
+    res.status(200).json({ message: 'File uploaded successfully' });
+})
+
+
+
+router.post('/addrecipe',async(req,res)=>
 {
-   var file = res.File
-    console.log(typeof file)
+
     let addrecipe= new Addrecipe(
         {
             recipename: req.body.recipename,
-            cookingtime: req.body.cookingtime,
             count:req.body.count,
             ingredients:req.body.ingredients,
             steps:req.body.steps,
             // image:res.file.image
-            image:res.file
+            // image:res.file
         }
+     
+       
        
     );
+ 
     try {
-        doc = addrecipe.save();
+        doc = await addrecipe.save();
         console.log("Added a recipe");
-        console.log(doc)
         return res.status(201).json(doc);
     }
     catch (err) {
@@ -142,20 +91,6 @@ router.post('/addrecipe',upload.single('file'),(req,res)=>
     }
 })
 
+module.exports = router
 
 
-//     addrecipe.save((err,doc)=> 
-//     {
-//         if(err)
-//         {
-//             console.log("Error occured in the routing",err)
-//         }
-//         else
-//         {
-//             // console.log(res.file.image)
-//             res.send(doc);
-//         }
-//     })
-// });
-
-module.exports=router
