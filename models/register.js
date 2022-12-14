@@ -7,4 +7,5 @@ const Register=  mongoose.model('register',
  
  });
 
+
  module.exports= Register

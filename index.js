@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 var session = require('express-session');
+const cookieParser = require('cookie-parser');
 const multer=require('multer');
 var fileExtension=require('file-extension');
 // var MongoStore = require('connect-mongo')(session);
@@ -14,6 +15,7 @@ const Register=require('./models/register')
 const userroutes=require('./routes/userroutes')
 const adminroutes=require('./routes/adminroutes')
 
+
 app.use(session({ secret: 'key', cookie: {maxAge:120000}}))
 app.use(express.json());
 app.use(cors({orgin:'http://localhost:4200/'}))
@@ -21,7 +23,6 @@ app.use(cors({orgin:'http://localhost:4200/'}))
 
 app.use('/userside',userroutes);
 app.use('/adminside', adminroutes);
-
 
 
 

@@ -1,11 +1,11 @@
 const express = require("express");
 const { isValidObjectId, model } = require("mongoose");
 const router = express.Router();
-// const Recipe=require('./recipe')
 const Addrecipe = require("../models/addrecipe");
 const Register = require("../models/register");
 const ObjectId = require("mongoose").Types.ObjectId;
 const multer = require("multer"); 
+const Comments = require("../models/Comment");
 const PATH = "./uploads";
 
 //GET API-Register
@@ -35,6 +35,7 @@ router.post("/register", (req, res) => {
     } else {
       res.send(doc);
       console.log("sended")
+      console.log(req.body.username)
     }
   });
 });
@@ -42,7 +43,7 @@ router.post("/register", (req, res) => {
 
 
 //POST API LOGIN
-router.post("/login", (req, res, next) => {
+router.post("/login", (req, res) => {
   //    console.log(req.body)
   Register.findOne({ email: req.body.email }, function (err, data) {
     if (data) {
@@ -60,48 +61,43 @@ router.post("/login", (req, res, next) => {
     }
   
   });
-});
+}),
 
+//COMMENT API
+router.post("/comment", async (req, res) => 
+{ 
+  let com = new Comments
+  ({
+    name: req.body.name,
+    comment: req.body.comment
+  })
 
+  try
+  {
+    doc = await com.save();
+    console.log(com);
+    return res.status(201).json(doc);
+  }
+  catch (err)
+   {
+    return res.status(501).json(err);
+   }
+})
 
-// router.get('/addrecipe',(req,res)=>
-// {
-//     Addrecipe.find((err,doc)=>
-//     {
-//         if(err)
-//         {
-//             console.log("error occured", + err)
-//         }
-//         else
-//         {
-//             res.send(doc)
-//         }
-//     })
-// })
+router.get("/comment", (req, res) =>
+{
+  Comments.find((err, doc) => {
+    if (err) {
+      console.log("Error occured in the routing",+ err);
+    }
+    else
+    {
+      res.send(doc);
+      // console.log(doc)
+    }
+})
+}
+)
 
-// router.post('/addrecipe',(req,res)=>
-// {
-//     let addrecipe= new Addrecipe(
-//         {
-//             recipename: req.body.recipename,
-//             cookingtime: req.body.cookingtime,
-//             // image:file.filename,
-//             count:req.body.count,
-//             ingredients:req.body.ingredients,
-//             steps:req.body.steps
-//         }
-//     );
-//     addrecipe.save((err,doc)=>
-//     {
-//         if(err)
-//         {
-//             console.log("Error occured in the routing",err)
-//         }
-//         else
-//         {
-//             res.send(doc);
-//         }
-//     })
-// });
 
 module.exports = router;

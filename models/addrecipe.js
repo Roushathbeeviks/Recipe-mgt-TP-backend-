@@ -6,6 +6,6 @@ const Addrecipe=mongoose.model('addrecipe',
     count:{type:Number},
     ingredients:{type:String},
     steps:{type:String},
-    imagePath:{type:String}
+    imagename:{type:String}
 })
 module.exports=Addrecipe
